@@ -45,12 +45,10 @@ export async function POST(request) {
 
     response.cookies.set("token", token, {
       httpOnly: true,
-      path: "/",
     });
 
     return response;
   } catch (error) {
-    console.log("Error in API:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

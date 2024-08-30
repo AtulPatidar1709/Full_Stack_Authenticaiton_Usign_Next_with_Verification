@@ -18,6 +18,7 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  interests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
   forgotPasswordToken: String,
   forgotPasswordTokenExpiry: Date,
   verifyToken: String,

@@ -11,41 +11,21 @@ import { FiShoppingCart } from "react-icons/fi";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 
 const Header = () => {
-  const [data, setData] = useState({});
-
   const router = useRouter();
-
-  const getUserData = useCallback(async () => {
-    try {
-      const response = await axios.post("/api/users/me");
-      if (response.data.success) {
-        setData(response.data.data);
-      } else {
-        toast.error(response.data.error);
-      }
-    } catch (error) {
-      toast.error(
-        "Something Went Wrong: " +
-          (error.response?.data?.error || error.message)
-      );
-      console.error("Error in Frontend:", error);
-    }
-  }, [data]);
-
-  // Automatically call getUserData when the component mounts
-  useEffect(() => {
-    getUserData();
-  }, []);
 
   const logOutHandler = useCallback(async () => {
     try {
       await axios.get("/api/users/logout");
-      toast.success("logout success");
+      toast.success("Logout success");
       router.push("/login");
     } catch (error) {
       toast.error("Something went wrong");
     }
-  });
+  }, [router]);
+
+  useCallback(() => {
+    getUserDetails();
+  }, []);
 
   return (
     <>
@@ -56,9 +36,8 @@ const Header = () => {
           <ul className="flex gap-5">
             <Link href={"/"}>Help</Link>
             <Link href={"/"}>Orders & Returns</Link>
-            <Link href={"/"}>
-              Hi, {data ? data.name : <Link href={"/login"}>LogIn</Link>}
-            </Link>
+            {/* Conditionally render based on isMounted */}
+            <Link href={"/"}>Hi, "John"</Link>
           </ul>
         </div>
         {/* Main header */}
@@ -85,9 +64,11 @@ const Header = () => {
             <Link href={"/"}>
               <FiShoppingCart size={20} />
             </Link>
-            <Link href={"/"} onClick={logOutHandler}>
-              <RiLogoutBoxRFill size={20} />
-            </Link>
+            {/* {data && (
+              <Link href={"/"} onClick={logOutHandler}>
+                <RiLogoutBoxRFill size={20} />
+              </Link>
+            )} */}
           </div>
         </div>
       </div>
