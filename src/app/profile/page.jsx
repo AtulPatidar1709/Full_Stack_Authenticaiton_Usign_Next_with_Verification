@@ -7,6 +7,7 @@ import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
+import Loader from "../feed/loader";
 
 const ITEMS_PER_PAGE = 5; // Number of items per page for pagination
 
@@ -19,20 +20,36 @@ export default function Interests() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    async function fetchCategories() {
+    async function fetchInitialData() {
       try {
-        const response = await fetch(
-          `/api/categories/allcategories?page=${currentPage}&limit=${ITEMS_PER_PAGE}`
-        );
-        if (!response.ok) {
+        const userResponse = await fetch("/api/users/me", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!userResponse.ok) {
           throw new Error("Network response was not ok");
         }
-        const data = await response.json();
-        if (data.success) {
-          setCategories(data.categoriesData);
-          setTotalPages(Math.ceil(data.totalItems / ITEMS_PER_PAGE)); // Calculate total pages
+        const userData = await userResponse.json();
+        if (userData.success) {
+          setSelectedInterests(new Set(userData.data.interests));
         } else {
-          throw new Error(data.error);
+          throw new Error(userData.message);
+        }
+
+        const categoryResponse = await fetch(
+          `/api/categories/allcategories?page=${currentPage}&limit=${ITEMS_PER_PAGE}`
+        );
+        if (!categoryResponse.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const categoryData = await categoryResponse.json();
+        if (categoryData.success) {
+          setCategories(categoryData.categoriesData);
+          setTotalPages(Math.ceil(categoryData.totalItems / ITEMS_PER_PAGE)); // Calculate total pages
+        } else {
+          throw new Error(categoryData.error);
         }
       } catch (error) {
         setError(error.message);
@@ -41,7 +58,7 @@ export default function Interests() {
       }
     }
 
-    fetchCategories();
+    fetchInitialData();
   }, [currentPage]);
 
   const handleCheckboxChange = async (categoryId) => {
@@ -53,20 +70,13 @@ export default function Interests() {
     }
     setSelectedInterests(updatedInterests); // Update state immediately for UX
 
-    // Prepare data for API call
     const interestsArray = Array.from(updatedInterests);
 
     try {
       const response = await axios.put(
         "/api/users/me",
-        {
-          interests: interestsArray, // Send selected category IDs
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { interests: interestsArray }, // Send selected category IDs
+        { headers: { "Content-Type": "application/json" } }
       );
 
       if (!response.data.success) {
@@ -99,7 +109,11 @@ export default function Interests() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader />
+      </div>
+    );
   }
 
   if (error) {
@@ -107,20 +121,22 @@ export default function Interests() {
   }
 
   return (
-    <div className="flex flex-col inset-0 w-[33%] max-w-md p-4 mx-auto rounded-lg border mt-[5%] border-gray-300 bg-white shadow-lg">
+    <div className="flex flex-col w-full sm:w-3/4 sm:mt-[10%] md:w-2/3 lg:w-2/5 lg:mt-[10%] xl:w-1/3 xl:mt-[10%] p-4 mx-auto rounded-lg mt-[10%] border border-gray-300 bg-white shadow-lg max-w-[90%]">
       <div className="flex flex-col items-center">
-        <h2 className="text-2xl font-bold mb-4">Please mark your interests!</h2>
-        <p className="mb-4">We will keep you notified.</p>
+        <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">
+          Please mark your interests!
+        </h2>
+        <p className="text-sm sm:text-base mb-4">We will keep you notified.</p>
       </div>
-      <form className="flex flex-col mt-3 gap-4 pl-[5%]">
-        <p className="font-inter font-semibold text-[20px] leading-[26px]">
-          My saved Interest
+      <form className="flex flex-col mt-3 gap-2 sm:gap-4 w-full px-4">
+        <p className="font-inter font-semibold text-lg sm:text-xl leading-[26px]">
+          My saved Interests
         </p>
         {categories.map((category) => (
           <label
             key={category._id}
-            className={`flex items-center space-x-3 ${
-              selectedInterests.has(category._id) ? "bg-[#92b6ff4a]" : "" // Add background color when selected
+            className={`flex items-center space-x-3 p-2 rounded ${
+              selectedInterests.has(category._id) ? "bg-blue-100" : ""
             }`}
           >
             <input
@@ -129,7 +145,7 @@ export default function Interests() {
               onChange={() => handleCheckboxChange(category._id)}
               className="form-checkbox h-5 w-5"
             />
-            <span>
+            <span className="text-sm sm:text-base">
               {category.name
                 .replace(/([A-Z])/g, " $1")
                 .replace(/^./, (str) => str.toUpperCase())}
@@ -137,19 +153,18 @@ export default function Interests() {
           </label>
         ))}
       </form>
-      {/* Pagination Controls */}
-      <div className="flex justify-center items-center space-x-2 mt-6">
+      <div className="flex justify-center items-center space-x-2 mt-6 w-full px-4">
         <button
           onClick={() => handlePageChange(1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 bg-blue-500 text-white rounded-lg disabled:opacity-50"
+          className="px-2 py-1 bg-blue-500 text-white rounded-lg disabled:opacity-50"
         >
           <MdOutlineKeyboardDoubleArrowLeft />
         </button>
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 rounded-lg disabled:opacity-50"
+          className="px-2 py-1 rounded-lg disabled:opacity-50"
         >
           <MdOutlineKeyboardArrowLeft />
         </button>
@@ -167,14 +182,14 @@ export default function Interests() {
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded-lg disabled:opacity-50"
+          className="px-2 py-1 rounded-lg disabled:opacity-50"
         >
           <MdOutlineKeyboardArrowRight />
         </button>
         <button
           onClick={() => handlePageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 bg-blue-500 text-white rounded-lg disabled:opacity-50"
+          className="px-2 py-1 bg-blue-500 text-white rounded-lg disabled:opacity-50"
         >
           <MdOutlineKeyboardDoubleArrowRight />
         </button>

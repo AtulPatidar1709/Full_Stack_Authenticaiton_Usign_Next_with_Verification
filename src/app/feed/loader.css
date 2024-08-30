@@ -1,0 +1,39 @@
+/* styles/globals.css */
+
+.loader {
+  position: relative;
+  width: 64px; /* equivalent to w-16 in Tailwind */
+  height: 64px; /* equivalent to h-16 in Tailwind */
+  background: #fff;
+  border-radius: 50%; /* equivalent to rounded-full in Tailwind */
+  overflow: hidden;
+}
+
+.loader:after {
+  content: "";
+  position: absolute;
+  inset: 8px; /* equivalent to inset-2 in Tailwind */
+  margin: auto;
+  background: #222b32;
+  border-radius: 50%; /* equivalent to rounded-full in Tailwind */
+}
+
+.loader:before {
+  content: "";
+  position: absolute;
+  inset: 0px; /* equivalent to inset-0 in Tailwind */
+  margin: auto;
+  background: #de3500;
+  animation: crlMugLoader 2s linear infinite alternate;
+}
+
+@keyframes crlMugLoader {
+  0%,
+  10% {
+    transform: translateY(64px);
+  }
+  90%,
+  100% {
+    transform: translateY(0px);
+  }
+}

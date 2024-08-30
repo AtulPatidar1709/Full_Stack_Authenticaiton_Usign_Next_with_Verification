@@ -4,21 +4,24 @@ import { NextResponse } from "next/server";
 export function middleware(request) {
   const path = request.nextUrl.pathname;
 
-  const isPublicPath =
-    path === "/login" || path === "/signup" || path === "/verifyemail";
+  // Define public paths that don't require authentication
+  const isPublicPath = ["/login", "/signup", "/verifyemail"].includes(path);
 
+  // Retrieve token from cookies
   const token = request.cookies.get("token")?.value || "";
 
+  // Redirect logged-in users from public paths to the home page
   if (isPublicPath && token) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  // Redirect unauthenticated users from protected paths to the login page
   if (!isPublicPath && !token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }
 
-// See "Matching Paths" below to learn more
+// Define paths to apply the middleware
 export const config = {
   matcher: ["/", "/login", "/signup", "/verifyemail", "/profile"],
 };
