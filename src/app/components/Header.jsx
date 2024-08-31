@@ -72,19 +72,19 @@ const Header = () => {
                 : "hidden"
             }`}
           >
-            <Link href={"/"} className="hover:text-blue-500 transition">
+            <Link href={"/profile"} className="hover:text-blue-500 transition">
               Categories
             </Link>
-            <Link href={"/"} className="hover:text-blue-500 transition">
+            <Link href={"/profile"} className="hover:text-blue-500 transition">
               Sale
             </Link>
-            <Link href={"/"} className="hover:text-blue-500 transition">
+            <Link href={"/profile"} className="hover:text-blue-500 transition">
               Clearance
             </Link>
-            <Link href={"/"} className="hover:text-blue-500 transition">
+            <Link href={"/profile"} className="hover:text-blue-500 transition">
               New stock
             </Link>
-            <Link href={"/"} className="hover:text-blue-500 transition">
+            <Link href={"/profile"} className="hover:text-blue-500 transition">
               Trending
             </Link>
           </ul>
