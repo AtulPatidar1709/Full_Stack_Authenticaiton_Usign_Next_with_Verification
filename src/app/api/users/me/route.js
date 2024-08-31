@@ -73,7 +73,7 @@ export async function PUT(request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error in PUT /api/users/me:", error);
+    // console.error("Error in PUT /api/users/me:", error);
     return NextResponse.json(
       {
         success: false,

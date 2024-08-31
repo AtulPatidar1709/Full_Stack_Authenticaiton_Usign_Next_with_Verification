@@ -42,7 +42,6 @@ const Page = () => {
 
   const handleVerify = async () => {
     const enteredOtp = Object.values(otpValues).join(""); // Concatenate all values
-    console.log(enteredOtp);
 
     try {
       const response = await axios.post("/api/users/verifyemail", {
@@ -65,52 +64,50 @@ const Page = () => {
   };
 
   return (
-    <>
-      <div className="flex flex-col justify-center items-center inset-0 w-[33%] max-w-md p-4 mx-auto rounded-lg border mt-[5%] border-gray-300 bg-white shadow-lg">
-        {loading ? (
-          "Loading..."
-        ) : (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleVerify();
-            }}
-            className="flex flex-col w-full max-w-screen-md gap-[28px] px-[25px] pb-12"
+    <div className="flex flex-col justify-center items-center w-full max-w-md p-4 mx-auto mt-8 md:mt-12 lg:mt-16 rounded-lg border border-gray-300 bg-white shadow-lg">
+      {loading ? (
+        <div className="flex justify-center items-center w-full h-16">
+          <p className="text-lg font-semibold">Loading...</p>
+        </div>
+      ) : (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleVerify();
+          }}
+          className="flex flex-col w-full gap-6 px-4 sm:px-6 md:px-8 lg:px-10"
+        >
+          <h1 className="text-xl sm:text-2xl font-bold text-center leading-tight">
+            Verify Email
+          </h1>
+          <div className="flex flex-col gap-2 items-center">
+            <h3 className="text-lg sm:text-xl font-semibold text-center">
+              Enter the 8-digit code you received at
+            </h3>
+            <p className="text-sm sm:text-base text-center">{email}</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-center text-sm sm:text-base">Code</p>
+            <div className="w-full flex flex-row gap-2 sm:gap-3 md:gap-4 justify-center">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <OtpInput
+                  key={`otp${index + 1}`}
+                  id={`otp${index + 1}`}
+                  handleChange={handleChange}
+                  value={otpValues[`otp${index + 1}`]}
+                />
+              ))}
+            </div>
+          </div>
+          <button
+            className="w-full py-3 px-5 bg-indigo-500 text-white rounded-md font-semibold cursor-pointer transition duration-200 hover:bg-indigo-400"
+            type="submit"
           >
-            <h1 className="font-inter pt-3 font-bold text-2xl leading-tight text-center">
-              Verify Email
-            </h1>
-            <div className="flex gap-2 flex-col justify-center items-center">
-              <h3 className="font-inter font-semibold text-xl leading-custom">
-                Enter the 8 digit code you have received on
-              </h3>
-              <p className="font-inter font-normal text-base leading-custom">
-                {email}
-              </p>
-            </div>
-            <div>
-              <p>Code</p>
-              <div className="w-full flex flex-row gap-2.5 items-center justify-center">
-                {Array.from({ length: 8 }).map((_, index) => (
-                  <OtpInput
-                    key={`otp${index + 1}`}
-                    id={`otp${index + 1}`}
-                    handleChange={handleChange}
-                    value={otpValues[`otp${index + 1}`]}
-                  />
-                ))}
-              </div>
-            </div>
-            <button
-              className="w-full h-7 border-none bg-indigo-500 text-white font-semibold cursor-pointer rounded-md transition duration-200 hover:bg-indigo-400"
-              type="submit"
-            >
-              Verify
-            </button>
-          </form>
-        )}
-      </div>
-    </>
+            Verify
+          </button>
+        </form>
+      )}
+    </div>
   );
 };
 

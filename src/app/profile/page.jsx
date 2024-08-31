@@ -83,7 +83,7 @@ export default function Interests() {
         throw new Error(response.data.message);
       }
 
-      console.log("Interests updated successfully", response.data.data);
+      // console.log("Interests updated successfully", response.data.data);
     } catch (error) {
       console.error("Error updating interests", error.message);
     }
@@ -123,7 +123,7 @@ export default function Interests() {
   return (
     <div className="flex flex-col w-full sm:w-3/4 sm:mt-[10%] md:w-2/3 lg:w-2/5 lg:mt-[10%] xl:w-1/3 xl:mt-[10%] p-4 mx-auto rounded-lg mt-[10%] border border-gray-300 bg-white shadow-lg max-w-[90%]">
       <div className="flex flex-col items-center">
-        <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">
+        <h2 className="text-[1rem] sm:text-2xl font-bold mb-2 sm:mb-4">
           Please mark your interests!
         </h2>
         <p className="text-sm sm:text-base mb-4">We will keep you notified.</p>
@@ -153,18 +153,18 @@ export default function Interests() {
           </label>
         ))}
       </form>
-      <div className="flex justify-center items-center space-x-2 mt-6 w-full px-4">
+      <div className="flex justify-center items-center text-[#ACACAC] space-x-2 mt-6 w-full px-4">
         <button
           onClick={() => handlePageChange(1)}
           disabled={currentPage === 1}
-          className="px-2 py-1 bg-blue-500 text-white rounded-lg disabled:opacity-50"
+          className=" rounded-lg disabled:opacity-50 "
         >
           <MdOutlineKeyboardDoubleArrowLeft />
         </button>
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-2 py-1 rounded-lg disabled:opacity-50"
+          className="rounded-lg disabled:opacity-50 "
         >
           <MdOutlineKeyboardArrowLeft />
         </button>
@@ -172,8 +172,8 @@ export default function Interests() {
           <span
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`px-2 py-1 cursor-pointer ${
-              page === currentPage ? "font-bold" : ""
+            className={`cursor-pointer ${
+              page === currentPage ? "font-bold text-black" : ""
             }`}
           >
             {page}
@@ -182,14 +182,14 @@ export default function Interests() {
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-2 py-1 rounded-lg disabled:opacity-50"
+          className="rounded-lg disabled:opacity-50 "
         >
           <MdOutlineKeyboardArrowRight />
         </button>
         <button
           onClick={() => handlePageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-2 py-1 bg-blue-500 text-white rounded-lg disabled:opacity-50"
+          className=" rounded-lg disabled:opacity-50 "
         >
           <MdOutlineKeyboardDoubleArrowRight />
         </button>

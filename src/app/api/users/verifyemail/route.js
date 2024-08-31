@@ -8,7 +8,6 @@ export async function POST(request) {
   try {
     const reqBody = await request.json();
     const { enteredOtp } = reqBody;
-    console.log(enteredOtp);
 
     // Find user by OTP
     const user = await User.findOne({
